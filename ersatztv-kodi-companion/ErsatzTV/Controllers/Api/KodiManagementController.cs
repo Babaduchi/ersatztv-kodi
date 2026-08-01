@@ -23,6 +23,12 @@ namespace ErsatzTV.Controllers.Api;
 [Route("api/kodi-management")]
 public class KodiManagementController(IMediator mediator, IConfiguration configuration) : ControllerBase
 {
+    private static readonly string[] ManagementFeatures =
+    [
+        "channels", "schedules", "schedule-items", "playouts", "blocks", "fillers", "watermarks",
+        "content-search", "ffmpeg-profiles", "smart-collections"
+    ];
+
     private bool Authorized()
     {
         string expected = configuration["ETV_KODI_MANAGEMENT_KEY"]
@@ -40,14 +46,14 @@ public class KodiManagementController(IMediator mediator, IConfiguration configu
         : Unauthorized();
 
     private IActionResult From<T>(Either<BaseError, T> result) =>
-        result.Match<IActionResult>(Ok, error => Problem(error.ToString()));
+        result.Match<IActionResult>(value => Ok(value), error => Problem(error.ToString()));
 
     [HttpGet("capabilities")]
     public IActionResult Capabilities() => Authorized()
         ? Ok(new
         {
             apiVersion = 1,
-            features = new[] { "channels", "schedules", "schedule-items", "playouts", "blocks", "fillers", "watermarks", "content-search", "ffmpeg-profiles", "smart-collections" }
+            features = ManagementFeatures
         })
         : Guard();
 
@@ -148,7 +154,7 @@ public class KodiManagementController(IMediator mediator, IConfiguration configu
     public async Task<IActionResult> UpdatePlayoutFile(int id, [FromBody] KodiPlayoutFileRequest request, CancellationToken token)
     {
         if (!Authorized()) return Guard();
-        Either<BaseError, Unit> result = request.Kind?.ToLowerInvariant() switch
+        Either<BaseError, PlayoutNameViewModel> result = request.Kind?.ToLowerInvariant() switch
         {
             "sequential" => await mediator.Send(new UpdateSequentialPlayout(id, request.ScheduleFile), token),
             "scripted" => await mediator.Send(new UpdateScriptedPlayout(id, request.ScheduleFile), token),
