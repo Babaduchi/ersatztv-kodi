@@ -1,0 +1,18 @@
+services:
+  ersatztv:
+    build:
+      context: .
+      args:
+        ERSATZTV_VERSION: v26.5.1
+    image: ersatztv-kodi:v26.5.1
+    ports:
+      - "8409:8409"
+    environment:
+      # Generate a long random value; use the same value in Kodi add-on settings.
+      ETV_KODI_MANAGEMENT_KEY: change-this-to-a-long-random-secret
+      TZ: America/Los_Angeles
+    volumes:
+      # Adapt these to match the official container you are replacing.
+      - ./config:/config
+      - /path/to/media:/media:ro
+    restart: unless-stopped

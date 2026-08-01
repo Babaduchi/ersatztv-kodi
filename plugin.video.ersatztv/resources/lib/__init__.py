@@ -1,0 +1,1 @@
+"""ErsatzTV Kodi add-on."""

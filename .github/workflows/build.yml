@@ -1,0 +1,84 @@
+name: Build and validate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  kodi-addon:
+    name: Kodi add-on
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Validate Python and XML
+        run: |
+          python -m compileall -q plugin.video.ersatztv
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+          for path in Path("plugin.video.ersatztv").rglob("*.xml"):
+              ET.parse(path)
+              print("valid:", path)
+          PY
+      - name: Package Kodi add-on
+        run: zip -qr plugin.video.ersatztv-2.0.0.zip plugin.video.ersatztv -x '*/__pycache__/*'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plugin.video.ersatztv-2.0.0
+          path: plugin.video.ersatztv-2.0.0.zip
+          if-no-files-found: error
+
+  companion-dotnet:
+    name: Compile companion against ErsatzTV v26.5.1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: Fetch pinned ErsatzTV source
+        run: git clone --depth 1 --branch v26.5.1 https://github.com/ErsatzTV/legacy.git upstream
+      - name: Add management controller
+        run: cp ersatztv-kodi-companion/ErsatzTV/Controllers/Api/KodiManagementController.cs upstream/ErsatzTV/Controllers/Api/
+      - name: Restore
+        working-directory: upstream
+        run: dotnet restore ErsatzTV/ErsatzTV.csproj
+      - name: Compile
+        working-directory: upstream
+        run: dotnet build ErsatzTV/ErsatzTV.csproj -c Release --no-restore
+      - name: Publish compiled application
+        working-directory: upstream
+        run: dotnet publish ErsatzTV/ErsatzTV.csproj -c Release --no-restore --no-self-contained -o ../compiled-companion
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ersatztv-kodi-companion-compiled-v26.5.1
+          path: compiled-companion/
+          if-no-files-found: error
+
+  companion-container:
+    name: Build companion container
+    runs-on: ubuntu-latest
+    needs: companion-dotnet
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: ersatztv-kodi-companion
+          push: false
+          load: true
+          tags: ersatztv-kodi:test
+          build-args: ERSATZTV_VERSION=v26.5.1
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Inspect built image
+        run: docker image inspect ersatztv-kodi:test
+

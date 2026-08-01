@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.ersatztv" name="ErsatzTV" version="2.0.0" provider-name="Codex">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Watch ErsatzTV channels with a native Kodi interface</summary>
+    <description lang="en_GB">Browse ErsatzTV channels, groups, favourites and XMLTV programme listings. Configure the server, authentication, playback, guide, appearance and caching entirely inside Kodi.</description>
+    <platform>all</platform>
+    <license>MIT</license>
+    <website>https://ersatztv.org/</website>
+    <source>https://github.com/ErsatzTV/ErsatzTV</source>
+    <assets>
+      <icon>resources/icon.png</icon>
+    </assets>
+  </extension>
+</addon>

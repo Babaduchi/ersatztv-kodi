@@ -1,0 +1,356 @@
+msgid ""
+msgstr ""
+"Language: en_GB\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "#32001"
+msgid "Connection"
+msgstr "Connection"
+
+msgctxt "#32002"
+msgid "ErsatzTV server"
+msgstr "ErsatzTV server"
+
+msgctxt "#32003"
+msgid "Server URL"
+msgstr "Server URL"
+
+msgctxt "#32004"
+msgid "M3U playlist path or URL"
+msgstr "M3U playlist path or URL"
+
+msgctxt "#32005"
+msgid "XMLTV guide path or URL"
+msgstr "XMLTV guide path or URL"
+
+msgctxt "#32006"
+msgid "Streaming JWT access token"
+msgstr "Streaming JWT access token"
+
+msgctxt "#32007"
+msgid "Network timeout (seconds)"
+msgstr "Network timeout (seconds)"
+
+msgctxt "#32008"
+msgid "Verify HTTPS certificates"
+msgstr "Verify HTTPS certificates"
+
+msgctxt "#32009"
+msgid "Kodi management API key"
+msgstr "Kodi management API key"
+
+msgctxt "#32010"
+msgid "Programme guide"
+msgstr "Programme guide"
+
+msgctxt "#32011"
+msgid "Guide display"
+msgstr "Guide display"
+
+msgctxt "#32012"
+msgid "Past programmes (hours)"
+msgstr "Past programmes (hours)"
+
+msgctxt "#32013"
+msgid "Future programmes (hours)"
+msgstr "Future programmes (hours)"
+
+msgctxt "#32014"
+msgid "Show channels without guide data"
+msgstr "Show channels without guide data"
+
+msgctxt "#32015"
+msgid "Show programme descriptions"
+msgstr "Show programme descriptions"
+
+msgctxt "#32016"
+msgid "Show next programme in channel list"
+msgstr "Show next programme in channel list"
+
+msgctxt "#32017"
+msgid "Time format"
+msgstr "Time format"
+
+msgctxt "#32018"
+msgid "Kodi system setting"
+msgstr "Kodi system setting"
+
+msgctxt "#32019"
+msgid "12 hour"
+msgstr "12 hour"
+
+msgctxt "#32020"
+msgid "24 hour"
+msgstr "24 hour"
+
+msgctxt "#32030"
+msgid "Playback"
+msgstr "Playback"
+
+msgctxt "#32031"
+msgid "Streaming"
+msgstr "Streaming"
+
+msgctxt "#32032"
+msgid "Use InputStream Adaptive for HLS"
+msgstr "Use InputStream Adaptive for HLS"
+
+msgctxt "#32033"
+msgid "Stream MIME type"
+msgstr "Stream MIME type"
+
+msgctxt "#32034"
+msgid "Detect automatically"
+msgstr "Detect automatically"
+
+msgctxt "#32035"
+msgid "HLS"
+msgstr "HLS"
+
+msgctxt "#32036"
+msgid "MPEG-TS"
+msgstr "MPEG-TS"
+
+msgctxt "#32040"
+msgid "Appearance"
+msgstr "Appearance"
+
+msgctxt "#32041"
+msgid "Channel listing"
+msgstr "Channel listing"
+
+msgctxt "#32042"
+msgid "Home screen"
+msgstr "Home screen"
+
+msgctxt "#32043"
+msgid "Sections"
+msgstr "Sections"
+
+msgctxt "#32044"
+msgid "All channels"
+msgstr "All channels"
+
+msgctxt "#32045"
+msgid "Favourites"
+msgstr "Favourites"
+
+msgctxt "#32046"
+msgid "Channel sort order"
+msgstr "Channel sort order"
+
+msgctxt "#32047"
+msgid "Channel number"
+msgstr "Channel number"
+
+msgctxt "#32048"
+msgid "Channel name"
+msgstr "Channel name"
+
+msgctxt "#32049"
+msgid "Show channel numbers"
+msgstr "Show channel numbers"
+
+msgctxt "#32050"
+msgid "Show group in labels"
+msgstr "Show group in labels"
+
+msgctxt "#32051"
+msgid "List artwork"
+msgstr "List artwork"
+
+msgctxt "#32052"
+msgid "Programme artwork, then channel logo"
+msgstr "Programme artwork, then channel logo"
+
+msgctxt "#32053"
+msgid "Channel logo only"
+msgstr "Channel logo only"
+
+msgctxt "#32054"
+msgid "No remote artwork"
+msgstr "No remote artwork"
+
+msgctxt "#32055"
+msgid "Hidden groups (comma-separated)"
+msgstr "Hidden groups (comma-separated)"
+
+msgctxt "#32060"
+msgid "Cache and diagnostics"
+msgstr "Cache and diagnostics"
+
+msgctxt "#32061"
+msgid "Data refresh"
+msgstr "Data refresh"
+
+msgctxt "#32062"
+msgid "Cache lifetime (minutes, 0 disables)"
+msgstr "Cache lifetime (minutes, 0 disables)"
+
+msgctxt "#32063"
+msgid "Use stale cache when server is unavailable"
+msgstr "Use stale cache when server is unavailable"
+
+msgctxt "#32064"
+msgid "Debug logging"
+msgstr "Debug logging"
+
+msgctxt "#32065"
+msgid "Favourites data"
+msgstr "Favourites data"
+
+msgctxt "#32070"
+msgid "Channel builder and scheduling"
+msgstr "Channel builder and scheduling"
+
+msgctxt "#32071"
+msgid "Management interface"
+msgstr "Management interface"
+
+msgctxt "#32072"
+msgid "Show management menu"
+msgstr "Show management menu"
+
+msgctxt "#32073"
+msgid "Confirm destructive actions"
+msgstr "Confirm destructive actions"
+
+msgctxt "#32074"
+msgid "Enable advanced JSON editors"
+msgstr "Enable advanced JSON editors"
+
+msgctxt "#32101"
+msgid "Configure the same endpoints shown on ErsatzTV's IPTV page."
+msgstr "Configure the same endpoints shown on ErsatzTV's IPTV page."
+
+msgctxt "#32103"
+msgid "For example: http://192.168.1.10:8409"
+msgstr "For example: http://192.168.1.10:8409"
+
+msgctxt "#32106"
+msgid "Optional token used by ErsatzTV when JWT streaming security is enabled."
+msgstr "Optional token used by ErsatzTV when JWT streaming security is enabled."
+
+msgctxt "#32109"
+msgid "Must match ETV_KODI_MANAGEMENT_KEY on the companion server. This is separate from the streaming JWT."
+msgstr "Must match ETV_KODI_MANAGEMENT_KEY on the companion server. This is separate from the streaming JWT."
+
+msgctxt "#32170"
+msgid "Requires the authenticated ErsatzTV Kodi management companion."
+msgstr "Requires the authenticated ErsatzTV Kodi management companion."
+
+msgctxt "#32174"
+msgid "Shows full JSON editing actions for fields not exposed by compact Kodi dialogs."
+msgstr "Shows full JSON editing actions for fields not exposed by compact Kodi dialogs."
+
+msgctxt "#32132"
+msgid "Requires the inputstream.adaptive add-on. Leave disabled if the normal Kodi player works."
+msgstr "Requires the inputstream.adaptive add-on. Leave disabled if the normal Kodi player works."
+
+msgctxt "#32155"
+msgid "Exact group names, separated by commas."
+msgstr "Exact group names, separated by commas."
+
+msgctxt "#32200"
+msgid "ErsatzTV"
+msgstr "ErsatzTV"
+
+msgctxt "#32201"
+msgid "Channels"
+msgstr "Channels"
+
+msgctxt "#32202"
+msgid "Favourites"
+msgstr "Favourites"
+
+msgctxt "#32203"
+msgid "Channel groups"
+msgstr "Channel groups"
+
+msgctxt "#32204"
+msgid "On now"
+msgstr "On now"
+
+msgctxt "#32205"
+msgid "Refresh channel and guide data"
+msgstr "Refresh channel and guide data"
+
+msgctxt "#32206"
+msgid "Test server connection"
+msgstr "Test server connection"
+
+msgctxt "#32207"
+msgid "Add-on settings"
+msgstr "Add-on settings"
+
+msgctxt "#32208"
+msgid "Next"
+msgstr "Next"
+
+msgctxt "#32209"
+msgid "Add to favourites"
+msgstr "Add to favourites"
+
+msgctxt "#32210"
+msgid "Remove from favourites"
+msgstr "Remove from favourites"
+
+msgctxt "#32211"
+msgid "View programme guide"
+msgstr "View programme guide"
+
+msgctxt "#32212"
+msgid "No favourite channels. Use a channel's context menu to add one."
+msgstr "No favourite channels. Use a channel's context menu to add one."
+
+msgctxt "#32213"
+msgid "No channels match this view."
+msgstr "No channels match this view."
+
+msgctxt "#32214"
+msgid "No channel groups were found in the playlist."
+msgstr "No channel groups were found in the playlist."
+
+msgctxt "#32215"
+msgid "This channel is no longer available."
+msgstr "This channel is no longer available."
+
+msgctxt "#32216"
+msgid "{} — Programme guide"
+msgstr "{} — Programme guide"
+
+msgctxt "#32217"
+msgid "Now"
+msgstr "Now"
+
+msgctxt "#32218"
+msgid "No programmes are available in the configured guide window."
+msgstr "No programmes are available in the configured guide window."
+
+msgctxt "#32220"
+msgid "Loaded {} channels and {} programmes"
+msgstr "Loaded {} channels and {} programmes"
+
+msgctxt "#32221"
+msgid "Refresh failed:\n{}"
+msgstr "Refresh failed:\n{}"
+
+msgctxt "#32222"
+msgid "ErsatzTV connection"
+msgstr "ErsatzTV connection"
+
+msgctxt "#32223"
+msgid "Connection successful.\n\nChannels: {}\nProgrammes in configured window: {}"
+msgstr "Connection successful.\n\nChannels: {}\nProgrammes in configured window: {}"
+
+msgctxt "#32224"
+msgid "Could not load ErsatzTV data.\n\n{}"
+msgstr "Could not load ErsatzTV data.\n\n{}"
+
+msgctxt "#32225"
+msgid "Unable to load data. Check the add-on settings and Kodi log.\n\n{}"
+msgstr "Unable to load data. Check the add-on settings and Kodi log.\n\n{}"
+
+msgctxt "#32226"
+msgid "InputStream Adaptive is enabled in the add-on settings but is not installed. Install it from Kodi's VideoPlayer InputStream add-ons, or disable this option."
+msgstr "InputStream Adaptive is enabled in the add-on settings but is not installed. Install it from Kodi's VideoPlayer InputStream add-ons, or disable this option."

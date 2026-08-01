@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings version="1">
+  <section id="plugin.video.ersatztv">
+    <category id="connection" label="32001" help="32101">
+      <group id="server" label="32002">
+        <setting id="server_url" type="string" label="32003" help="32103"><default>http://localhost:8409</default><control type="edit" format="string"><heading>32003</heading></control></setting>
+        <setting id="m3u_path" type="string" label="32004"><default>/iptv/channels.m3u</default><control type="edit" format="string"><heading>32004</heading></control></setting>
+        <setting id="xmltv_path" type="string" label="32005"><default>/iptv/xmltv.xml</default><control type="edit" format="string"><heading>32005</heading></control></setting>
+        <setting id="jwt_token" type="string" label="32006" help="32106"><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>32006</heading><hidden>true</hidden></control></setting>
+        <setting id="management_key" type="string" label="32009" help="32109"><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>32009</heading><hidden>true</hidden></control></setting>
+        <setting id="timeout" type="integer" label="32007"><default>15</default><constraints><minimum>3</minimum><step>1</step><maximum>120</maximum></constraints><control type="slider" format="integer"/></setting>
+        <setting id="verify_tls" type="boolean" label="32008"><default>true</default><control type="toggle"/></setting>
+      </group>
+    </category>
+    <category id="guide" label="32010">
+      <group id="guide_display" label="32011">
+        <setting id="past_hours" type="integer" label="32012"><default>2</default><constraints><minimum>0</minimum><step>1</step><maximum>24</maximum></constraints><control type="slider" format="integer"/></setting>
+        <setting id="future_hours" type="integer" label="32013"><default>12</default><constraints><minimum>1</minimum><step>1</step><maximum>168</maximum></constraints><control type="slider" format="integer"/></setting>
+        <setting id="show_empty_channels" type="boolean" label="32014"><default>true</default><control type="toggle"/></setting>
+        <setting id="programme_plot" type="boolean" label="32015"><default>true</default><control type="toggle"/></setting>
+        <setting id="show_next" type="boolean" label="32016"><default>true</default><control type="toggle"/></setting>
+        <setting id="time_format" type="string" label="32017"><default>system</default><constraints><options><option label="32018">system</option><option label="32019">12</option><option label="32020">24</option></options></constraints><control type="spinner" format="string"/></setting>
+      </group>
+    </category>
+    <category id="playback" label="32030">
+      <group id="streaming" label="32031">
+        <setting id="inputstream_adaptive" type="boolean" label="32032" help="32132"><default>false</default><control type="toggle"/></setting>
+        <setting id="mime_type" type="string" label="32033"><default>auto</default><constraints><options><option label="32034">auto</option><option label="32035">application/vnd.apple.mpegurl</option><option label="32036">video/mp2t</option></options></constraints><control type="spinner" format="string"/></setting>
+      </group>
+    </category>
+    <category id="appearance" label="32040">
+      <group id="listing" label="32041">
+        <setting id="home_layout" type="string" label="32042"><default>sections</default><constraints><options><option label="32043">sections</option><option label="32044">channels</option><option label="32045">favorites</option></options></constraints><control type="spinner" format="string"/></setting>
+        <setting id="sort_mode" type="string" label="32046"><default>number</default><constraints><options><option label="32047">number</option><option label="32048">name</option></options></constraints><control type="spinner" format="string"/></setting>
+        <setting id="channel_numbers" type="boolean" label="32049"><default>true</default><control type="toggle"/></setting>
+        <setting id="show_group" type="boolean" label="32050"><default>false</default><control type="toggle"/></setting>
+        <setting id="artwork_mode" type="string" label="32051"><default>programme</default><constraints><options><option label="32052">programme</option><option label="32053">channel</option><option label="32054">none</option></options></constraints><control type="spinner" format="string"/></setting>
+        <setting id="hide_groups" type="string" label="32055" help="32155"><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>32055</heading></control></setting>
+      </group>
+    </category>
+    <category id="cache" label="32060">
+      <group id="refresh" label="32061">
+        <setting id="cache_minutes" type="integer" label="32062"><default>15</default><constraints><minimum>0</minimum><step>1</step><maximum>1440</maximum></constraints><control type="slider" format="integer"/></setting>
+        <setting id="fallback_cache" type="boolean" label="32063"><default>true</default><control type="toggle"/></setting>
+        <setting id="debug_logging" type="boolean" label="32064"><default>false</default><control type="toggle"/></setting>
+        <setting id="favourites" type="string" label="32065"><level>4</level><default>[]</default><visible>false</visible><control type="edit" format="string"/></setting>
+      </group>
+    </category>
+    <category id="management" label="32070" help="32170">
+      <group id="management_ui" label="32071">
+        <setting id="show_management" type="boolean" label="32072"><default>true</default><control type="toggle"/></setting>
+        <setting id="confirm_destructive" type="boolean" label="32073"><default>true</default><control type="toggle"/></setting>
+        <setting id="advanced_json" type="boolean" label="32074" help="32174"><default>false</default><control type="toggle"/></setting>
+      </group>
+    </category>
+  </section>
+</settings>
