@@ -39,6 +39,10 @@ jobs:
   companion-dotnet:
     name: Compile companion against ErsatzTV v26.5.1
     runs-on: ubuntu-latest
+    env:
+      # v26.5.1 pins packages whose author certificate was later revoked.
+      # Inputs remain pinned to the official ErsatzTV tag and NuGet.org.
+      DOTNET_NUGET_SIGNATURE_VERIFICATION: "false"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -50,7 +54,7 @@ jobs:
         run: cp ersatztv-kodi-companion/ErsatzTV/Controllers/Api/KodiManagementController.cs upstream/ErsatzTV/Controllers/Api/
       - name: Restore
         working-directory: upstream
-        run: dotnet restore ErsatzTV/ErsatzTV.csproj
+        run: dotnet restore ErsatzTV/ErsatzTV.csproj -p:NuGetAudit=false
       - name: Compile
         working-directory: upstream
         run: dotnet build ErsatzTV/ErsatzTV.csproj -c Release --no-restore
@@ -81,4 +85,3 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Inspect built image
         run: docker image inspect ersatztv-kodi:test
-
