@@ -15,7 +15,7 @@ A Kodi-native video add-on for browsing and playing an ErsatzTV lineup. It reads
 ## Install
 
 1. In Kodi, choose **Add-ons → Install from zip file**.
-2. Select the packaged `plugin.video.ersatztv-2.0.0.zip`.
+2. Select the packaged `plugin.video.ersatztv-2.1.0.zip`.
 3. Open **Add-ons → Video add-ons → ErsatzTV → Settings**.
 4. Enter the ErsatzTV address (typically `http://SERVER:8409`). The default endpoint paths are `/iptv/channels.m3u` and `/iptv/xmltv.xml`; replace them with the exact URLs shown in ErsatzTV if needed.
 5. If ErsatzTV protects streaming with JWT, paste the token in the streaming token setting.
@@ -23,6 +23,10 @@ A Kodi-native video add-on for browsing and playing an ErsatzTV lineup. It reads
 ## Native channel builder and scheduler
 
 Version 2 includes an optional Kodi-native management interface. It requires the companion server patch shipped alongside the add-on and a matching `ETV_KODI_MANAGEMENT_KEY`. Channels and schedules have guided editors; every advanced ErsatzTV field remains available through opt-in complete JSON editors. Destructive actions require confirmation by default.
+
+## Local server control
+
+Version 2.1 adds a **Local ErsatzTV server** screen. Point it at a separately installed ErsatzTV executable to start, stop, restart, monitor, and view its log from Kodi. Windows, macOS, and Linux are supported. The server is intentionally not bundled inside the small Kodi add-on archive.
 
 ## Development
 

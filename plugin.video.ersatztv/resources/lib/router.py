@@ -122,6 +122,8 @@ def load_guides(force=False):
 
 
 def home():
+    from . import server
+    server.autostart()
     layout = client.setting("home_layout", "sections")
     if layout == "channels":
         return channels()
@@ -135,6 +137,7 @@ def home():
     item(L(32205), url("refresh"), False)
     item(L(32206), url("test"), False)
     item(L(32207), url("settings"), False)
+    item("Local ErsatzTV server", url("server"), True)
     if client.setting_bool("show_management", True):
         item("Channel builder and scheduling", url("manage"), True)
     finish(cache=False)
@@ -297,6 +300,31 @@ def run():
         elif action == "refresh": refresh()
         elif action == "test": test_connection()
         elif action == "settings": ADDON.openSettings()
+        elif action == "server":
+            from . import server
+            server.home()
+        elif action == "server_choose":
+            from . import server
+            server.choose_executable()
+            xbmc.executebuiltin("Container.Refresh")
+        elif action == "server_start":
+            from . import server
+            server.start()
+            xbmc.executebuiltin("Container.Refresh")
+        elif action == "server_stop":
+            from . import server
+            server.stop()
+            xbmc.executebuiltin("Container.Refresh")
+        elif action == "server_restart":
+            from . import server
+            server.restart()
+            xbmc.executebuiltin("Container.Refresh")
+        elif action == "server_status":
+            from . import server
+            server.show_status()
+        elif action == "server_log":
+            from . import server
+            server.show_log()
         elif action == "manage":
             from . import management
             management.home()

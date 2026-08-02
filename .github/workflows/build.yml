@@ -29,11 +29,11 @@ jobs:
               print("valid:", path)
           PY
       - name: Package Kodi add-on
-        run: zip -qr plugin.video.ersatztv-2.0.0.zip plugin.video.ersatztv -x '*/__pycache__/*'
+        run: zip -qr plugin.video.ersatztv-2.1.0.zip plugin.video.ersatztv -x '*/__pycache__/*'
       - uses: actions/upload-artifact@v4
         with:
-          name: plugin.video.ersatztv-2.0.0
-          path: plugin.video.ersatztv-2.0.0.zip
+          name: plugin.video.ersatztv-2.1.0
+          path: plugin.video.ersatztv-2.1.0.zip
           if-no-files-found: error
 
   companion-dotnet:

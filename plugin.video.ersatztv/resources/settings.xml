@@ -53,5 +53,14 @@
         <setting id="advanced_json" type="boolean" label="32074" help="32174"><default>false</default><control type="toggle"/></setting>
       </group>
     </category>
+    <category id="local_server" label="32300" help="32310">
+      <group id="local_server_process" label="32301">
+        <setting id="server_executable" type="string" label="32302" help="32312"><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>32302</heading></control></setting>
+        <setting id="server_arguments" type="string" label="32303" help="32313"><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>32303</heading></control></setting>
+        <setting id="server_working_directory" type="string" label="32304"><default></default><constraints><allowempty>true</allowempty></constraints><control type="edit" format="string"><heading>32304</heading></control></setting>
+        <setting id="server_autostart" type="boolean" label="32305" help="32315"><default>false</default><control type="toggle"/></setting>
+        <setting id="server_start_timeout" type="integer" label="32306"><default>30</default><constraints><minimum>5</minimum><step>5</step><maximum>120</maximum></constraints><control type="slider" format="integer"/></setting>
+      </group>
+    </category>
   </section>
 </settings>

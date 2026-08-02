@@ -354,3 +354,47 @@ msgstr "Unable to load data. Check the add-on settings and Kodi log.\n\n{}"
 msgctxt "#32226"
 msgid "InputStream Adaptive is enabled in the add-on settings but is not installed. Install it from Kodi's VideoPlayer InputStream add-ons, or disable this option."
 msgstr "InputStream Adaptive is enabled in the add-on settings but is not installed. Install it from Kodi's VideoPlayer InputStream add-ons, or disable this option."
+
+msgctxt "#32300"
+msgid "Local ErsatzTV server"
+msgstr "Local ErsatzTV server"
+
+msgctxt "#32301"
+msgid "Server process"
+msgstr "Server process"
+
+msgctxt "#32302"
+msgid "ErsatzTV executable"
+msgstr "ErsatzTV executable"
+
+msgctxt "#32303"
+msgid "Command-line arguments"
+msgstr "Command-line arguments"
+
+msgctxt "#32304"
+msgid "Working directory (optional)"
+msgstr "Working directory (optional)"
+
+msgctxt "#32305"
+msgid "Start server when the add-on opens"
+msgstr "Start server when the add-on opens"
+
+msgctxt "#32306"
+msgid "Startup timeout (seconds)"
+msgstr "Startup timeout (seconds)"
+
+msgctxt "#32310"
+msgid "Start and monitor a separately installed ErsatzTV server on the same computer as Kodi."
+msgstr "Start and monitor a separately installed ErsatzTV server on the same computer as Kodi."
+
+msgctxt "#32312"
+msgid "On Windows, select ErsatzTV.exe. On macOS or Linux, select the ErsatzTV executable."
+msgstr "On Windows, select ErsatzTV.exe. On macOS or Linux, select the ErsatzTV executable."
+
+msgctxt "#32313"
+msgid "Optional arguments passed directly to ErsatzTV. Shell syntax is not used."
+msgstr "Optional arguments passed directly to ErsatzTV. Shell syntax is not used."
+
+msgctxt "#32315"
+msgid "Only starts a local server when the configured Server URL is not reachable."
+msgstr "Only starts a local server when the configured Server URL is not reachable."
