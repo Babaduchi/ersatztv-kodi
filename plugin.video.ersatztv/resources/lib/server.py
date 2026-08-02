@@ -101,16 +101,16 @@ def start(interactive=True):
     current = state()
     if current["running"]:
         if interactive:
-            xbmcgui.Dialog().ok("Local ErsatzTV server", "The server process started by Kodi is already running.")
+            xbmcgui.Dialog().ok("Server Configuration", "The server process started by Kodi is already running.")
         return True
     executable = xbmcvfs.translatePath(client.setting("server_executable")).strip()
     if not executable:
         if interactive:
-            xbmcgui.Dialog().ok("Local ErsatzTV server", "Choose the ErsatzTV executable in Add-on settings first.")
+            xbmcgui.Dialog().ok("Server Configuration", "Choose the ErsatzTV executable in Settings first.")
         return False
     if not os.path.isfile(executable):
         if interactive:
-            xbmcgui.Dialog().ok("Local ErsatzTV server", "The configured executable was not found:\n\n{}".format(executable))
+            xbmcgui.Dialog().ok("Server Configuration", "The configured executable was not found:\n\n{}".format(executable))
         return False
     arguments = shlex.split(client.setting("server_arguments"), posix=sys.platform != "win32")
     command = [executable] + arguments
@@ -131,12 +131,12 @@ def start(interactive=True):
     except (OSError, ValueError) as exc:
         client.log("Unable to start local server: {}".format(exc), xbmc.LOGERROR)
         if interactive:
-            xbmcgui.Dialog().ok("Local ErsatzTV server", "Could not start ErsatzTV.\n\n{}".format(exc))
+            xbmcgui.Dialog().ok("Server Configuration", "Could not start ErsatzTV.\n\n{}".format(exc))
         return False
     timeout = max(1, int(client.setting("server_start_timeout", "30")))
     progress = xbmcgui.DialogProgress()
     if interactive:
-        progress.create("Local ErsatzTV server", "Waiting for ErsatzTV to become available…")
+        progress.create("Server Configuration", "Waiting for ErsatzTV to become available…")
     ready = False
     for elapsed in range(timeout):
         if reachable():
@@ -152,7 +152,7 @@ def start(interactive=True):
     if interactive:
         progress.close()
         message = "ErsatzTV is running and reachable." if ready else "The process started, but the server URL is not reachable yet. Check the URL and server log."
-        xbmcgui.Dialog().ok("Local ErsatzTV server", message)
+        xbmcgui.Dialog().ok("Server Configuration", message)
     return ready
 
 
@@ -161,7 +161,7 @@ def stop(interactive=True):
     pid = record.get("pid")
     if not _alive(pid):
         if interactive:
-            xbmcgui.Dialog().ok("Local ErsatzTV server", "Kodi does not have a running local server process to stop.")
+            xbmcgui.Dialog().ok("Server Configuration", "Kodi does not have a running local server process to stop.")
         return True
     try:
         os.kill(int(pid), signal.SIGTERM)
@@ -179,7 +179,7 @@ def stop(interactive=True):
         except OSError:
             pass
     if interactive:
-        xbmcgui.Dialog().ok("Local ErsatzTV server", "ErsatzTV stopped." if stopped else "ErsatzTV did not stop. Close it from the operating system.")
+        xbmcgui.Dialog().ok("Server Configuration", "ErsatzTV stopped." if stopped else "ErsatzTV did not stop. Close it from the operating system.")
     return stopped
 
 
@@ -192,7 +192,7 @@ def show_status():
     current = state()
     process_text = "Running (PID {})".format(current["pid"]) if current["running"] else "Not running"
     network_text = "Reachable" if current["reachable"] else "Not reachable"
-    xbmcgui.Dialog().ok("Local ErsatzTV server", "Kodi-started process: {}\nServer URL: {}\nConnection: {}".format(
+    xbmcgui.Dialog().ok("Server Configuration", "Kodi-started process: {}\nServer URL: {}\nConnection: {}".format(
         process_text, client.setting("server_url", "http://localhost:8409"), network_text))
 
 
@@ -208,10 +208,11 @@ def show_log():
 def home():
     from .router import HANDLE, finish, item, url
     current = state()
-    xbmcplugin.setPluginCategory(HANDLE, "Local ErsatzTV server")
+    xbmcplugin.setPluginCategory(HANDLE, "Server Configuration")
     status = "Running" if current["running"] else "Stopped"
     connection = "reachable" if current["reachable"] else "not reachable"
     item("Status: {} · {}".format(status, connection), url("server_status"))
+    item("Test server connection", url("test"))
     item("Choose ErsatzTV executable", url("server_choose"))
     item("Generate management API key", url("server_generate_key"))
     item("Start server", url("server_start"))

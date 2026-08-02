@@ -114,7 +114,7 @@ _SECTIONS = {
         ("Playout", "web", "settings/playout"),
         ("User interface", "web", "settings/ui"),
         ("XMLTV", "web", "settings/xmltv"),
-        ("Local ErsatzTV server", "server", ""),
+        ("Server Configuration", "server", ""),
         ("PVR Configuration", "pvr", ""),
         ("Settings", "addon_settings", ""),
     ]),

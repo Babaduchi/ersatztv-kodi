@@ -28,7 +28,7 @@ Version 2.2 reorganizes management to match ErsatzTV's own Channels, FFmpeg Prof
 
 ## Local server control
 
-Version 2.1 adds a **Local ErsatzTV server** screen. Point it at a separately installed ErsatzTV executable to start, stop, restart, monitor, and view its log from Kodi. Windows, macOS, and Linux are supported. The server is intentionally not bundled inside the small Kodi add-on archive.
+Version 2.1 adds a **Server Configuration** screen. Point it at a separately installed ErsatzTV executable to test the connection or start, stop, restart, monitor, and view its log from Kodi. Windows, macOS, and Linux are supported. The server is intentionally not bundled inside the small Kodi add-on archive.
 
 When Kodi starts a local server, it automatically generates a cryptographically random management API key when needed, stores it in Kodi's private add-on settings, and supplies the matching `ETV_KODI_MANAGEMENT_KEY` environment variable to ErsatzTV. Remote servers still require manual key configuration.
 

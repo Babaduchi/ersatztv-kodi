@@ -356,8 +356,8 @@ msgid "InputStream Adaptive is enabled in the add-on settings but is not install
 msgstr "InputStream Adaptive is enabled in the add-on settings but is not installed. Install it from Kodi's VideoPlayer InputStream add-ons, or disable this option."
 
 msgctxt "#32300"
-msgid "Local ErsatzTV server"
-msgstr "Local ErsatzTV server"
+msgid "Server Configuration"
+msgstr "Server Configuration"
 
 msgctxt "#32301"
 msgid "Server process"

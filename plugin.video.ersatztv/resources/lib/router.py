@@ -135,8 +135,7 @@ def home():
     item(L(32203), url("groups"), True)
     item(L(32204), url("now"), True)
     item(L(32205), url("refresh"), False)
-    item(L(32206), url("test"), False)
-    item("Local ErsatzTV server", url("server"), True)
+    item("Server Configuration", url("server"), True)
     item("PVR Configuration", url("pvr"), True)
     if client.setting_bool("show_management", True):
         item("Channel & Schedule Configuration", url("manage"), True)
