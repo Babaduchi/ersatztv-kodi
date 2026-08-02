@@ -307,6 +307,10 @@ def run():
             from . import server
             server.choose_executable()
             xbmc.executebuiltin("Container.Refresh")
+        elif action == "server_generate_key":
+            from . import server
+            server.generate_management_key()
+            xbmc.executebuiltin("Container.Refresh")
         elif action == "server_start":
             from . import server
             server.start()

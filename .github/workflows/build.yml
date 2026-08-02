@@ -18,6 +18,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+      - name: Read add-on version
+        run: |
+          python - <<'PY'
+          import os
+          import xml.etree.ElementTree as ET
+          version = ET.parse("plugin.video.ersatztv/addon.xml").getroot().attrib["version"]
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env:
+              env.write("ADDON_VERSION={}\n".format(version))
+              env.write("ADDON_ZIP=plugin.video.ersatztv-{}.zip\n".format(version))
+          PY
       - name: Validate Python and XML
         run: |
           python -m compileall -q plugin.video.ersatztv
@@ -29,14 +39,15 @@ jobs:
               print("valid:", path)
           PY
       - name: Package Kodi add-on
-        run: zip -qr plugin.video.ersatztv-2.1.0.zip plugin.video.ersatztv -x '*/__pycache__/*'
+        run: zip -qr "$ADDON_ZIP" plugin.video.ersatztv -x '*/__pycache__/*'
       - name: Verify Kodi-installable ZIP structure
         run: |
           python - <<'PY'
           from pathlib import PurePosixPath
           from zipfile import ZipFile
 
-          archive = "plugin.video.ersatztv-2.1.0.zip"
+          import os
+          archive = os.environ["ADDON_ZIP"]
           with ZipFile(archive) as package:
               names = [PurePosixPath(name) for name in package.namelist()]
               roots = {path.parts[0] for path in names if path.parts}
@@ -50,10 +61,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if ! gh release view v2.1.0 >/dev/null 2>&1; then
-            gh release create v2.1.0 --target "$GITHUB_SHA" --title "ErsatzTV Kodi Add-on 2.1.0" --notes "Download plugin.video.ersatztv-2.1.0.zip below and install it directly in Kodi. Do not unzip it. This release asset is not wrapped in a GitHub Actions artifact."
+          if ! gh release view "v${ADDON_VERSION}" >/dev/null 2>&1; then
+            gh release create "v${ADDON_VERSION}" --target "$GITHUB_SHA" --title "ErsatzTV Kodi Add-on ${ADDON_VERSION}" --notes "Download ${ADDON_ZIP} below and install it directly in Kodi. Do not unzip it. This release asset is not wrapped in a GitHub Actions artifact."
           fi
-          gh release upload v2.1.0 plugin.video.ersatztv-2.1.0.zip --clobber
+          gh release upload "v${ADDON_VERSION}" "$ADDON_ZIP" --clobber
 
   companion-dotnet:
     name: Compile companion against ErsatzTV v26.5.1

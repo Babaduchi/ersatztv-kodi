@@ -1,5 +1,6 @@
 import json
 import os
+import secrets
 import shlex
 import signal
 import subprocess
@@ -21,6 +22,28 @@ ADDON = xbmcaddon.Addon()
 PROFILE = xbmcvfs.translatePath(ADDON.getAddonInfo("profile"))
 PID_FILE = os.path.join(PROFILE, "ersatztv-server.json")
 LOG_FILE = os.path.join(PROFILE, "ersatztv-server.log")
+
+
+def ensure_management_key(regenerate=False):
+    key = client.setting("management_key")
+    if key and not regenerate:
+        return key
+    key = secrets.token_urlsafe(32)
+    ADDON.setSetting("management_key", key)
+    client.log("Generated a Kodi management API key for the local ErsatzTV server")
+    return key
+
+
+def generate_management_key():
+    existing = client.setting("management_key")
+    if existing and not xbmcgui.Dialog().yesno(
+            "Kodi management API key",
+            "Replace the existing management key? The local ErsatzTV server must be restarted afterward."):
+        return
+    ensure_management_key(True)
+    xbmcgui.Dialog().ok(
+        "Kodi management API key",
+        "A secure key was generated and saved. Kodi will pass it to a locally started ErsatzTV server automatically.")
 
 
 def _ensure_profile():
@@ -93,7 +116,9 @@ def start(interactive=True):
     command = [executable] + arguments
     working_dir = xbmcvfs.translatePath(client.setting("server_working_directory")).strip() or os.path.dirname(executable)
     _ensure_profile()
-    options = {"cwd": working_dir, "stdin": subprocess.DEVNULL}
+    environment = os.environ.copy()
+    environment["ETV_KODI_MANAGEMENT_KEY"] = ensure_management_key()
+    options = {"cwd": working_dir, "stdin": subprocess.DEVNULL, "env": environment}
     if sys.platform == "win32":
         options["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
     else:
@@ -188,6 +213,7 @@ def home():
     connection = "reachable" if current["reachable"] else "not reachable"
     item("Status: {} · {}".format(status, connection), url("server_status"))
     item("Choose ErsatzTV executable", url("server_choose"))
+    item("Generate management API key", url("server_generate_key"))
     item("Start server", url("server_start"))
     item("Stop server", url("server_stop"))
     item("Restart server", url("server_restart"))
