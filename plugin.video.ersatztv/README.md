@@ -24,6 +24,8 @@ A Kodi-native video add-on for browsing and playing an ErsatzTV lineup. It reads
 
 Version 2 includes an optional Kodi-native management interface. It requires the companion server patch shipped alongside the add-on and a matching `ETV_KODI_MANAGEMENT_KEY`. Channels and schedules have guided editors; every advanced ErsatzTV field remains available through opt-in complete JSON editors. Destructive actions require confirmation by default.
 
+Version 2.2 reorganizes management to match ErsatzTV's own Channels, FFmpeg Profiles, Watermarks, Media Sources, Media, Lists, Scheduling, Settings and Support sections. Every upstream sidebar destination is represented. Native operations are used where a stable API exists; otherwise Kodi opens the matching server page and the in-add-on coverage audit identifies that boundary.
+
 ## Local server control
 
 Version 2.1 adds a **Local ErsatzTV server** screen. Point it at a separately installed ErsatzTV executable to start, stop, restart, monitor, and view its log from Kodi. Windows, macOS, and Linux are supported. The server is intentionally not bundled inside the small Kodi add-on archive.

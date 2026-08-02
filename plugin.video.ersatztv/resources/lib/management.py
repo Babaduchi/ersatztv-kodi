@@ -1,5 +1,6 @@
 import json
 import urllib.parse
+import webbrowser
 
 import xbmc
 import xbmcgui
@@ -57,17 +58,142 @@ def _json_edit(heading, value):
 
 def home():
     r = _router()
-    r.xbmcplugin.setPluginCategory(r.HANDLE, "ErsatzTV management")
+    r.xbmcplugin.setPluginCategory(r.HANDLE, "ErsatzTV")
     r.item("Channels", r.url("manage_list", kind="channels"), True)
-    r.item("Schedules", r.url("manage_list", kind="schedules"), True)
-    r.item("Playouts", r.url("manage_list", kind="playouts"), True)
-    r.item("Block schedules", r.url("manage_list", kind="blocks"), True)
-    r.item("Filler presets", r.url("manage_list", kind="fillers"), True)
-    r.item("Watermarks", r.url("manage_list", kind="watermarks"), True)
     r.item("FFmpeg profiles", r.url("manage_external", kind="profiles"), True)
-    r.item("Smart collections", r.url("manage_external", kind="smart"), True)
-    r.item("Test management API", r.url("manage_test"), False)
+    r.item("Watermarks", r.url("manage_list", kind="watermarks"), True)
+    r.item("Media sources", r.url("manage_section", section="sources"), True)
+    r.item("Media", r.url("manage_section", section="media"), True)
+    r.item("Lists", r.url("manage_section", section="lists"), True)
+    r.item("Scheduling", r.url("manage_section", section="scheduling"), True)
+    r.item("Settings", r.url("manage_section", section="settings"), True)
+    r.item("Support", r.url("manage_section", section="support"), True)
     r.finish(cache=False)
+
+
+_SECTIONS = {
+    "sources": ("Media sources", [
+        ("Local", "web", "media/sources/local"),
+        ("Emby", "web", "media/sources/emby"),
+        ("Jellyfin", "web", "media/sources/jellyfin"),
+        ("Plex", "web", "media/sources/plex"),
+    ]),
+    "media": ("Media", [
+        ("Libraries", "web", "media/libraries"),
+        ("Trash", "web", "media/trash"),
+        ("TV shows", "search", "shows"),
+        ("Movies", "web", "media/movies"),
+        ("Music artists", "search", "artists"),
+        ("Other videos", "web", "media/other/videos"),
+        ("Songs", "web", "media/music/songs"),
+        ("Images", "web", "media/browser/images"),
+        ("Remote streams", "web", "media/remote/streams"),
+    ]),
+    "lists": ("Lists", [
+        ("Manual collections", "search", "collections"),
+        ("Smart collections", "native", "smart"),
+        ("Multi-collections", "search", "multi-collections"),
+        ("Rerun collections", "search", "rerun-collections"),
+        ("Playlists", "web", "media/playlists"),
+        ("Trakt lists", "web", "media/trakt/lists"),
+        ("Filler presets", "list", "fillers"),
+    ]),
+    "scheduling": ("Scheduling", [
+        ("Schedules", "list", "schedules"),
+        ("Blocks", "list", "blocks"),
+        ("Templates", "web", "templates"),
+        ("Decos", "web", "decos"),
+        ("Deco templates", "web", "deco-templates"),
+        ("Playouts", "list", "playouts"),
+    ]),
+    "settings": ("Settings", [
+        ("FFmpeg settings", "web", "settings/ffmpeg"),
+        ("Logging", "web", "settings/logging"),
+        ("HDHomeRun", "web", "settings/hdhr"),
+        ("Scanner", "web", "settings/scanner"),
+        ("Playout", "web", "settings/playout"),
+        ("User interface", "web", "settings/ui"),
+        ("XMLTV", "web", "settings/xmltv"),
+        ("Local ErsatzTV server", "server", ""),
+        ("Kodi add-on settings", "addon_settings", ""),
+    ]),
+    "support": ("Support", [
+        ("Health checks", "web", "system/health"),
+        ("Logs", "web", "system/logs"),
+        ("Troubleshooting", "web", "system/troubleshooting"),
+        ("Test management API", "test", ""),
+        ("Feature coverage audit", "audit", ""),
+    ]),
+}
+
+
+def section(name):
+    r = _router()
+    title, entries = _SECTIONS.get(name, ("ErsatzTV", []))
+    r.xbmcplugin.setPluginCategory(r.HANDLE, title)
+    for label, mode, target in entries:
+        if mode == "list":
+            path, folder = r.url("manage_list", kind=target), True
+        elif mode == "native":
+            path, folder = r.url("manage_external", kind=target), True
+        elif mode == "search":
+            path, folder = r.url("manage_search", kind=target, title=label), False
+        elif mode == "web":
+            path, folder = r.url("manage_web", path=target, title=label), False
+        elif mode == "server":
+            path, folder = r.url("server"), True
+        elif mode == "addon_settings":
+            path, folder = r.url("settings"), False
+        elif mode == "test":
+            path, folder = r.url("manage_test"), False
+        else:
+            path, folder = r.url("manage_audit"), False
+        r.item(label, path, folder)
+    r.finish(cache=False)
+
+
+def server_page(path, title):
+    base = client.setting("server_url", "http://localhost:8409").rstrip("/")
+    target = base + "/" + path.lstrip("/")
+    opened = False
+    try:
+        opened = webbrowser.open(target)
+    except Exception as exc:
+        client.log("Unable to open browser for {}: {}".format(target, exc), xbmc.LOGERROR)
+    message = "Opened in the system browser:\n\n{}" if opened else "Open this ErsatzTV page in a browser:\n\n{}"
+    xbmcgui.Dialog().ok(title or "ErsatzTV", message.format(target))
+
+
+def search(kind, title):
+    query = _input("Search {}".format(title.lower()))
+    if not query:
+        return
+    rows = _request("search/{}?{}".format(kind, urllib.parse.urlencode({"query": query})))
+    if rows is None:
+        return
+    labels = []
+    for row in rows:
+        if isinstance(row, dict):
+            labels.append(row.get("name") or row.get("title") or row.get("showTitle") or "Result {}".format(row.get("id", "")))
+        else:
+            labels.append(str(row))
+    xbmcgui.Dialog().select("{} — {} result(s)".format(title, len(labels)), labels)
+
+
+def audit():
+    native = [
+        "Channels", "FFmpeg profiles", "Watermarks", "Smart collections", "Filler presets",
+        "Schedules and schedule items", "Blocks", "Playouts", "Content search",
+        "Local server start/stop/restart/log", "Automatic management API key"
+    ]
+    server_pages = [
+        "Local/Emby/Jellyfin/Plex sources", "Libraries and media browsers", "Trash", "Manual/multi/rerun collections",
+        "Playlists and Trakt lists", "Templates, decos, and deco templates", "FFmpeg/logging/HDHomeRun/scanner/playout/UI/XMLTV settings",
+        "Health checks, server logs, and troubleshooting"
+    ]
+    text = "NATIVE KODI CONTROLS\n• {}\n\nSERVER PAGE HANDOFFS\n• {}\n\nAll ErsatzTV v26.5.1 navigation areas are represented. Server page handoffs are used where ErsatzTV has no stable management API.".format(
+        "\n• ".join(native), "\n• ".join(server_pages))
+    xbmcgui.Dialog().textviewer("ErsatzTV feature coverage", text)
 
 
 def test():
@@ -87,6 +213,10 @@ def listing(kind):
     if data is None:
         return r.finish(cache=False)
     rows = _page(data)
+    editor_paths = {
+        "channels": "channels/{id}", "schedules": "schedules/{id}", "playouts": "playouts",
+        "blocks": "blocks/{id}", "fillers": "media/filler/presets/{id}/edit", "watermarks": "watermarks/{id}"
+    }
     for entity in rows:
         entity_id = entity.get("id", entity.get("playoutId"))
         if kind == "channels":
@@ -97,6 +227,10 @@ def listing(kind):
             label = entity.get("name", entity.get("channelName", "{} {}".format(kind, entity_id)))
         context = [("Edit", "RunPlugin({})".format(r.url("manage_edit", kind=kind, id=entity_id))),
                    ("Delete", "RunPlugin({})".format(r.url("manage_delete", kind=kind, id=entity_id, name=label)))]
+        editor_path = editor_paths.get(kind)
+        if editor_path:
+            context.append(("Open complete ErsatzTV editor", "RunPlugin({})".format(
+                r.url("manage_web", path=editor_path.format(id=entity_id), title=label))))
         if kind == "schedules":
             context.insert(1, ("Edit schedule items", "Container.Update({})".format(r.url("manage_items", id=entity_id, name=label))))
         r.item(label, r.url("manage_edit", kind=kind, id=entity_id), False, context=context)
@@ -321,6 +455,9 @@ def external(kind):
         label = row.get("name", "{} {}".format(title, row.get("id")))
         context = [("Edit", "RunPlugin({})".format(r.url("manage_external_edit", kind=kind, id=row.get("id")))),
                    ("Delete", "RunPlugin({})".format(r.url("manage_external_delete", kind=kind, id=row.get("id"), name=label)))]
+        editor_path = "ffmpeg/{id}" if kind == "profiles" else "media/smart-collections/{id}/edit"
+        context.append(("Open complete ErsatzTV editor", "RunPlugin({})".format(
+            r.url("manage_web", path=editor_path.format(id=row.get("id")), title=label))))
         r.item(label, r.url("manage_external_edit", kind=kind, id=row.get("id")), False, context=context)
     if not rows: r.empty("No {} found.".format(title.lower()))
     r.finish(cache=False)

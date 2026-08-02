@@ -335,6 +335,18 @@ def run():
         elif action == "manage_test":
             from . import management
             management.test()
+        elif action == "manage_section":
+            from . import management
+            management.section(params.get("section", "support"))
+        elif action == "manage_web":
+            from . import management
+            management.server_page(params.get("path", ""), params.get("title", "ErsatzTV"))
+        elif action == "manage_search":
+            from . import management
+            management.search(params.get("kind", "collections"), params.get("title", "Media"))
+        elif action == "manage_audit":
+            from . import management
+            management.audit()
         elif action == "manage_list":
             from . import management
             management.listing(params.get("kind", "channels"))
