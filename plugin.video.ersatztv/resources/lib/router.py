@@ -138,6 +138,7 @@ def home():
     item(L(32206), url("test"), False)
     item(L(32207), url("settings"), False)
     item("Local ErsatzTV server", url("server"), True)
+    item("Kodi Live TV and PVR setup", url("pvr"), True)
     if client.setting_bool("show_management", True):
         item("Channel builder and scheduling", url("manage"), True)
     finish(cache=False)
@@ -329,6 +330,28 @@ def run():
         elif action == "server_log":
             from . import server
             server.show_log()
+        elif action == "pvr":
+            from . import pvr
+            pvr.home()
+        elif action == "pvr_configure":
+            from . import pvr
+            pvr.configure()
+            xbmc.executebuiltin("Container.Refresh")
+        elif action == "pvr_test":
+            from . import pvr
+            pvr.test_urls()
+        elif action == "pvr_status":
+            from . import pvr
+            pvr.show_status()
+        elif action == "pvr_settings":
+            from . import pvr
+            pvr.open_settings()
+        elif action == "pvr_reload":
+            from . import pvr
+            pvr.reload_client()
+        elif action == "pvr_kodi_settings":
+            from . import pvr
+            pvr.open_kodi_settings()
         elif action == "manage":
             from . import management
             management.home()

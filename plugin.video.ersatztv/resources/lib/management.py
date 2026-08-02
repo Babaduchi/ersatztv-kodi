@@ -115,6 +115,7 @@ _SECTIONS = {
         ("User interface", "web", "settings/ui"),
         ("XMLTV", "web", "settings/xmltv"),
         ("Local ErsatzTV server", "server", ""),
+        ("Kodi Live TV and PVR", "pvr", ""),
         ("Kodi add-on settings", "addon_settings", ""),
     ]),
     "support": ("Support", [
@@ -142,6 +143,8 @@ def section(name):
             path, folder = r.url("manage_web", path=target, title=label), False
         elif mode == "server":
             path, folder = r.url("server"), True
+        elif mode == "pvr":
+            path, folder = r.url("pvr"), True
         elif mode == "addon_settings":
             path, folder = r.url("settings"), False
         elif mode == "test":
