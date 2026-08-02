@@ -27,3 +27,7 @@ Open the repository's **Actions** tab and select **Build and validate**. Success
 The companion API is disabled unless `ETV_KODI_MANAGEMENT_KEY` is configured. Use a long random secret, keep ErsatzTV on a trusted network, and use a separate value for the streaming JWT.
 
 See `ersatztv-kodi-companion/README.md` for container instructions and back up the ErsatzTV `/config` directory before replacing an existing container.
+
+## Management API requirement
+
+Native channel and schedule editing requires the authenticated companion build in `ersatztv-kodi-companion`. A standard ErsatzTV installation does not expose `/api/kodi-management`; when it is detected, the add-on explains the requirement and offers to open the corresponding standard ErsatzTV web editor instead of displaying a JSON decoding error.

@@ -34,12 +34,21 @@ def _page(data):
     return data.get("page", []) if isinstance(data, dict) else data or []
 
 
-def _request(path, method="GET", payload=None, success="Saved"):
+def _request(path, method="GET", payload=None, success="Saved", fallback_path=None):
     try:
         result = client.api_request("/api/kodi-management/" + path.lstrip("/"), method, payload)
         if method != "GET":
             _notify(success)
         return result
+    except client.ManagementApiUnavailable as exc:
+        message = "{}".format(exc)
+        if fallback_path and xbmcgui.Dialog().yesno(
+                "Management API unavailable",
+                "{}\n\nOpen the standard ErsatzTV editor instead?".format(message)):
+            server_page(fallback_path, "ErsatzTV editor")
+        else:
+            xbmcgui.Dialog().ok("Management API unavailable", message)
+        return None
     except Exception as exc:
         xbmcgui.Dialog().ok("ErsatzTV Manager", "Request failed:\n{}".format(exc))
         return None
@@ -226,7 +235,15 @@ def listing(kind):
               "fillers": "Filler presets", "watermarks": "Watermarks"}
     r.xbmcplugin.setPluginCategory(r.HANDLE, titles.get(kind, "ErsatzTV management"))
     r.item("[Add {}]".format(titles.get(kind, kind).rstrip("s")), r.url("manage_create", kind=kind), False)
-    data = _request(kind)
+    fallback_paths = {
+        "channels": "channels",
+        "schedules": "schedules",
+        "playouts": "playouts",
+        "blocks": "blocks",
+        "fillers": "media/filler/presets",
+        "watermarks": "watermarks",
+    }
+    data = _request(kind, fallback_path=fallback_paths.get(kind))
     if data is None:
         return r.finish(cache=False)
     rows = _page(data)

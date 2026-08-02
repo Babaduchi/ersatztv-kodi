@@ -23,6 +23,10 @@ PROFILE = xbmcvfs.translatePath(ADDON.getAddonInfo("profile"))
 _ATTR = re.compile(r'([\w-]+)="([^"]*)"')
 
 
+class ManagementApiUnavailable(RuntimeError):
+    """The server answered, but does not provide the Kodi management API."""
+
+
 def setting(key, default=""):
     value = ADDON.getSetting(key)
     return value if value != "" else default
@@ -110,7 +114,20 @@ def api_request(path, method="GET", payload=None):
     try:
         with urllib.request.urlopen(request, timeout=int(setting("timeout", "15")), context=context) as response:
             body = response.read()
-            return json.loads(body.decode("utf-8")) if body else True
+            if not body:
+                return True
+            text = body.decode("utf-8-sig", "replace")
+            content_type = (response.headers.get("Content-Type") or "").lower()
+            try:
+                return json.loads(text)
+            except (TypeError, ValueError):
+                if "text/html" in content_type or text.lstrip().startswith(("<!DOCTYPE", "<html", "<head", "<body")):
+                    raise ManagementApiUnavailable(
+                        "This ErsatzTV server does not include the Kodi management API. "
+                        "Install and run the authenticated ErsatzTV Kodi companion build, or use the standard ErsatzTV web editor.")
+                preview = " ".join(text.strip().split())[:160]
+                raise RuntimeError("The management API returned invalid JSON{}{}".format(
+                    ": " if preview else ".", preview))
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode("utf-8", "replace")
         raise RuntimeError("HTTP {}: {}".format(exc.code, detail or exc.reason))
