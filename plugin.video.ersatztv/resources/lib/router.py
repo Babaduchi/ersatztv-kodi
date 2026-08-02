@@ -360,6 +360,9 @@ def run():
         elif action == "manage_section":
             from . import management
             management.section(params.get("section", "support"))
+        elif action == "manage_sources":
+            from . import management
+            management.media_sources()
         elif action == "manage_web":
             from . import management
             management.server_page(params.get("path", ""), params.get("title", "ErsatzTV"))

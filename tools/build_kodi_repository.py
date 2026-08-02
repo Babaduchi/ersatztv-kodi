@@ -49,9 +49,15 @@ def main():
         zip_addon(addon_dir, archive)
         (target / (archive.name + ".sha256")).write_text(digest(archive, "sha256") + "\n", encoding="ascii")
         shutil.copy2(addon_dir / "addon.xml", target / "addon.xml")
-        icon = addon_dir / "icon.png"
-        if icon.exists():
-            shutil.copy2(icon, target / "icon.png")
+        metadata = ET.parse(addon_dir / "addon.xml").getroot().find("extension[@point='xbmc.addon.metadata']")
+        if metadata is not None:
+            for asset in metadata.findall("./assets/*"):
+                relative = Path((asset.text or "").strip())
+                source = addon_dir / relative
+                if relative.parts and source.is_file():
+                    destination = target / relative
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(source, destination)
 
     tree = ET.ElementTree(xml)
     ET.indent(tree, space="  ")

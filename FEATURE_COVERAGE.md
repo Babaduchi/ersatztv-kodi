@@ -7,7 +7,7 @@ The Kodi management menu follows the order and grouping in ErsatzTV's `MainLayou
 | Channels | Native list/create/edit/delete; channel number, profile, group and advanced JSON fields |
 | FFmpeg Profiles | Native list/create/edit/delete |
 | Watermarks | Native list/create/edit/delete |
-| Media Sources | Local, Emby, Jellyfin and Plex server-page handoffs |
+| Media Sources | Native source-type selector for Local, Emby, Jellyfin and Plex server-page handoffs |
 | Media | Native TV show and artist search; server-page handoffs for libraries, trash, movies, videos, songs, images and remote streams |
 | Lists | Native Smart Collection and Filler Preset CRUD; native searches for manual, multi- and rerun collections; server-page handoffs for full editors, playlists and Trakt lists |
 | Scheduling | Native Schedule, Schedule Item, Block and Playout CRUD; server-page handoffs for Templates, Decos and Deco Templates |

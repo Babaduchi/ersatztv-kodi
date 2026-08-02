@@ -62,7 +62,7 @@ def home():
     r.item("Channels", r.url("manage_list", kind="channels"), True)
     r.item("FFmpeg profiles", r.url("manage_external", kind="profiles"), True)
     r.item("Watermarks", r.url("manage_list", kind="watermarks"), True)
-    r.item("Media sources", r.url("manage_section", section="sources"), True)
+    r.item("Media sources", r.url("manage_sources"), False)
     r.item("Media", r.url("manage_section", section="media"), True)
     r.item("Lists", r.url("manage_section", section="lists"), True)
     r.item("Scheduling", r.url("manage_section", section="scheduling"), True)
@@ -153,6 +153,20 @@ def section(name):
             path, folder = r.url("manage_audit"), False
         r.item(label, path, folder)
     r.finish(cache=False)
+
+
+def media_sources():
+    sources = [
+        ("Local", "media/sources/local"),
+        ("Emby", "media/sources/emby"),
+        ("Jellyfin", "media/sources/jellyfin"),
+        ("Plex", "media/sources/plex"),
+    ]
+    selected = _select("Choose media source type", [label for label, _ in sources])
+    if selected < 0:
+        return
+    label, path = sources[selected]
+    server_page(path, "{} media sources".format(label))
 
 
 def server_page(path, title):
