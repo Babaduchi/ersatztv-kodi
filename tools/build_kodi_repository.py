@@ -9,6 +9,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "plugin.video.ersatztv"
+MULTI_UPDATE = ROOT / "script.multi.update.kodi"
 REPOSITORY = ROOT / "repository.babaduchi.ersatztv"
 
 
@@ -37,7 +38,7 @@ def main():
         shutil.rmtree(output)
     output.mkdir(parents=True)
 
-    addons = [REPOSITORY, PLUGIN]
+    addons = [REPOSITORY, PLUGIN, MULTI_UPDATE]
     xml = ET.Element("addons")
     for addon_dir in addons:
         xml.append(ET.parse(addon_dir / "addon.xml").getroot())
@@ -65,9 +66,9 @@ def main():
     tree.write(index, encoding="UTF-8", xml_declaration=True)
     (output / "addons.xml.md5").write_text(digest(index, "md5") + "\n", encoding="ascii")
     (output / "index.html").write_text(
-        "<!doctype html><title>Babaduchi ErsatzTV Kodi Repository</title>"
-        "<h1>Babaduchi ErsatzTV Kodi Repository</h1>"
-        "<p>Install the repository ZIP below once, then install ErsatzTV from Kodi's repository browser.</p>"
+        "<!doctype html><title>Babaduchi Kodi Repository</title>"
+        "<h1>Babaduchi Kodi Repository</h1>"
+        "<p>Install the repository ZIP below once, then install Babaduchi add-ons from Kodi's repository browser.</p>"
         '<p><a href="repository.babaduchi.ersatztv/repository.babaduchi.ersatztv-{}.zip">Download repository installer</a></p>'.format(version(REPOSITORY)),
         encoding="utf-8")
     print("Built Kodi repository at", output)

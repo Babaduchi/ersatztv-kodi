@@ -5,6 +5,7 @@ Kodi-native playback, channel building, and scheduling for ErsatzTV legacy v26.5
 This repository contains:
 
 - `plugin.video.ersatztv`: installable Kodi 19+ add-on
+- `script.multi.update.kodi`: Windows/Kodi 21 utility that updates media libraries and rebuilds all PVR data
 - `ersatztv-kodi-companion`: authenticated management API and custom-container build
 - GitHub Actions validation for the Kodi package, .NET companion, and Docker image
 
@@ -16,7 +17,10 @@ The setup shows the exact URLs before making changes and asks again before repla
 
 ## Automatic updates in Kodi
 
-Install `repository.babaduchi.ersatztv-1.0.0.zip` once from the [Babaduchi ErsatzTV Kodi Repository](https://babaduchi.github.io/ersatztv-kodi/). Then select **Add-ons > Install from repository > Babaduchi ErsatzTV Repository > Video add-ons > ErsatzTV**. Kodi will discover later versions published by this repository.
+Install `repository.babaduchi.ersatztv-1.1.0.zip` once from the [Babaduchi Kodi Repository](https://babaduchi.github.io/ersatztv-kodi/). Kodi will discover later add-on versions published by this repository.
+
+- **Video add-ons → ErsatzTV** installs the ErsatzTV integration.
+- **Program add-ons → Multi Update** installs the Windows/Kodi 21 utility.
 
 The **Publish Kodi repository** GitHub Actions workflow rebuilds `addons.xml`, checksums, versioned add-on ZIPs, and the repository installer on GitHub Pages after every successful build from the release branch.
 
