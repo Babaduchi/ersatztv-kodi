@@ -115,8 +115,8 @@ _SECTIONS = {
         ("User interface", "web", "settings/ui"),
         ("XMLTV", "web", "settings/xmltv"),
         ("Local ErsatzTV server", "server", ""),
-        ("Kodi Live TV and PVR", "pvr", ""),
-        ("Kodi add-on settings", "addon_settings", ""),
+        ("PVR Configuration", "pvr", ""),
+        ("Settings", "addon_settings", ""),
     ]),
     "support": ("Support", [
         ("Health checks", "web", "system/health"),

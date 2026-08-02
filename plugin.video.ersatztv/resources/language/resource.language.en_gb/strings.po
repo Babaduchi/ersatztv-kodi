@@ -200,8 +200,8 @@ msgid "Favourites data"
 msgstr "Favourites data"
 
 msgctxt "#32070"
-msgid "Channel builder and scheduling"
-msgstr "Channel builder and scheduling"
+msgid "Channel & Schedule Configuration"
+msgstr "Channel & Schedule Configuration"
 
 msgctxt "#32071"
 msgid "Management interface"
@@ -272,16 +272,16 @@ msgid "On now"
 msgstr "On now"
 
 msgctxt "#32205"
-msgid "Refresh channel and guide data"
-msgstr "Refresh channel and guide data"
+msgid "Refresh Guide"
+msgstr "Refresh Guide"
 
 msgctxt "#32206"
 msgid "Test server connection"
 msgstr "Test server connection"
 
 msgctxt "#32207"
-msgid "Add-on settings"
-msgstr "Add-on settings"
+msgid "Settings"
+msgstr "Settings"
 
 msgctxt "#32208"
 msgid "Next"

@@ -55,7 +55,7 @@ def home():
         status = "Enabled" if details.get("enabled") else "Installed but disabled"
         if details.get("version"):
             status += " · version {}".format(details["version"])
-    r.xbmcplugin.setPluginCategory(r.HANDLE, "Kodi Live TV and PVR")
+    r.xbmcplugin.setPluginCategory(r.HANDLE, "PVR Configuration")
     r.item("IPTV Simple status: {}".format(status), r.url("pvr_status"), False)
     r.item("Configure IPTV Simple automatically", r.url("pvr_configure"), False)
     r.item("Test ErsatzTV M3U and XMLTV URLs", r.url("pvr_test"), False)

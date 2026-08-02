@@ -10,7 +10,7 @@ This repository contains:
 
 ## Kodi Live TV setup
 
-Open **ErsatzTV > Kodi Live TV and PVR setup > Configure IPTV Simple automatically**. The guided setup can install and enable Kodi's official IPTV Simple Client, populate the ErsatzTV M3U playlist and XMLTV guide URLs, enable backend channel numbering, and size Kodi's EPG window from the add-on guide settings.
+Open **ErsatzTV > PVR Configuration > Configure IPTV Simple automatically**. The guided setup can install and enable Kodi's official IPTV Simple Client, populate the ErsatzTV M3U playlist and XMLTV guide URLs, enable backend channel numbering, and size Kodi's EPG window from the add-on guide settings.
 
 The setup shows the exact URLs before making changes and asks again before replacing a different existing IPTV Simple configuration. Use the test and status entries in the same menu to diagnose connectivity. If Kodi does not expose channels immediately after first configuration, restart Kodi once.
 

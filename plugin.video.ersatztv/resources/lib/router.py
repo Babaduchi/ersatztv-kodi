@@ -22,9 +22,9 @@ _ENGLISH = {
     32202: "Favourites",
     32203: "Channel groups",
     32204: "On now",
-    32205: "Refresh channel and guide data",
+    32205: "Refresh Guide",
     32206: "Test server connection",
-    32207: "Add-on settings",
+    32207: "Settings",
     32208: "Next",
     32209: "Add to favourites",
     32210: "Remove from favourites",
@@ -136,11 +136,11 @@ def home():
     item(L(32204), url("now"), True)
     item(L(32205), url("refresh"), False)
     item(L(32206), url("test"), False)
-    item(L(32207), url("settings"), False)
     item("Local ErsatzTV server", url("server"), True)
-    item("Kodi Live TV and PVR setup", url("pvr"), True)
+    item("PVR Configuration", url("pvr"), True)
     if client.setting_bool("show_management", True):
-        item("Channel builder and scheduling", url("manage"), True)
+        item("Channel & Schedule Configuration", url("manage"), True)
+    item(L(32207), url("settings"), False)
     finish(cache=False)
 
 
