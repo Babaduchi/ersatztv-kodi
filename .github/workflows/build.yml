@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   packages: read
 
 jobs:
@@ -30,11 +30,30 @@ jobs:
           PY
       - name: Package Kodi add-on
         run: zip -qr plugin.video.ersatztv-2.1.0.zip plugin.video.ersatztv -x '*/__pycache__/*'
-      - uses: actions/upload-artifact@v4
-        with:
-          name: plugin.video.ersatztv-2.1.0
-          path: plugin.video.ersatztv-2.1.0.zip
-          if-no-files-found: error
+      - name: Verify Kodi-installable ZIP structure
+        run: |
+          python - <<'PY'
+          from pathlib import PurePosixPath
+          from zipfile import ZipFile
+
+          archive = "plugin.video.ersatztv-2.1.0.zip"
+          with ZipFile(archive) as package:
+              names = [PurePosixPath(name) for name in package.namelist()]
+              roots = {path.parts[0] for path in names if path.parts}
+              assert roots == {"plugin.video.ersatztv"}, "unexpected ZIP roots: {}".format(sorted(roots))
+              assert PurePosixPath("plugin.video.ersatztv/addon.xml") in names, "addon.xml is not in the Kodi add-on root"
+              assert not any(path.suffix.lower() == ".zip" for path in names), "nested ZIP detected"
+          print("Kodi ZIP structure is valid and contains no nested archive")
+          PY
+      - name: Publish direct Kodi installable ZIP
+        if: github.event_name == 'push' && github.ref == 'refs/heads/agent/compile-ersatztv-kodi'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! gh release view v2.1.0 >/dev/null 2>&1; then
+            gh release create v2.1.0 --target "$GITHUB_SHA" --title "ErsatzTV Kodi Add-on 2.1.0" --notes "Download plugin.video.ersatztv-2.1.0.zip below and install it directly in Kodi. Do not unzip it. This release asset is not wrapped in a GitHub Actions artifact."
+          fi
+          gh release upload v2.1.0 plugin.video.ersatztv-2.1.0.zip --clobber
 
   companion-dotnet:
     name: Compile companion against ErsatzTV v26.5.1
