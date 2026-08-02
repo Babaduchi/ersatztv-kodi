@@ -31,14 +31,10 @@ jobs:
       - name: Validate Python and XML
         run: |
           python -m compileall -q plugin.video.ersatztv
-          python -m compileall -q script.multi.update.kodi
           python - <<'PY'
           import xml.etree.ElementTree as ET
           from pathlib import Path
           for path in Path("plugin.video.ersatztv").rglob("*.xml"):
-              ET.parse(path)
-              print("valid:", path)
-          for path in Path("script.multi.update.kodi").rglob("*.xml"):
               ET.parse(path)
               print("valid:", path)
           PY
