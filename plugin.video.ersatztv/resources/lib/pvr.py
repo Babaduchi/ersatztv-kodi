@@ -46,6 +46,95 @@ def _urls():
     )
 
 
+def _configuration_values():
+    m3u_url, xmltv_url = _urls()
+    return {
+        "m3uPathType": "1",
+        "m3uUrl": m3u_url,
+        "m3uCache": "true",
+        "epgPathType": "1",
+        "epgUrl": xmltv_url,
+        "epgCache": "true",
+        "epgIgnoreCaseForChannelIds": "true",
+        "defaultProviderName": "ErsatzTV",
+        "numberByOrder": "false",
+    }
+
+
+def configure_automatic(monitor, notify):
+    """Install and configure IPTV Simple when this can be done without replacing user data."""
+    if not _details():
+        notify("Installing IPTV Simple Client")
+        xbmc.executebuiltin("InstallAddon({})".format(IPTV_SIMPLE_ID), wait=True)
+        for _ in range(30):
+            if _details():
+                break
+            if monitor.waitForAbort(1):
+                return {"ok": False, "changed": False, "message": "Kodi stopped before IPTV Simple Client was installed."}
+        if not _details():
+            return {
+                "ok": False, "changed": False,
+                "message": "Install IPTV Simple Client from Kodi's official PVR clients, then restart Kodi."}
+
+    addon = xbmcaddon.Addon(IPTV_SIMPLE_ID)
+    values = _configuration_values()
+    current_m3u = addon.getSetting("m3uUrl")
+    current_epg = addon.getSetting("epgUrl")
+    if ((current_m3u and current_m3u != values["m3uUrl"]) or
+            (current_epg and current_epg != values["epgUrl"])):
+        return {
+            "ok": False, "changed": False,
+            "message": "IPTV Simple already has a different configuration. Open PVR Configuration to approve replacing it."}
+
+    changed = not _details().get("enabled")
+    for key, value in values.items():
+        if addon.getSetting(key) != value:
+            if not addon.setSetting(key, value):
+                return {
+                    "ok": False, "changed": changed,
+                    "message": "Kodi rejected the IPTV Simple setting '{}'.".format(key)}
+            changed = True
+    _rpc("Addons.SetAddonEnabled", {"addonid": IPTV_SIMPLE_ID, "enabled": True})
+    _set_pvr_options()
+    if changed:
+        reload_client(confirm=False)
+    return {"ok": True, "changed": changed, "message": ""}
+
+
+def readiness():
+    """Return Kodi PVR channel and EPG readiness without starting playback."""
+    status = {"channels": 0, "epg": False, "playable": False}
+    details = _details()
+    if not details or not details.get("enabled"):
+        return status
+    try:
+        groups = (_rpc("PVR.GetChannelGroups", {"channeltype": "tv"}) or {}).get("channelgroups", [])
+        for group in groups:
+            group_id = group.get("channelgroupid")
+            if group_id is None:
+                continue
+            channels = (_rpc("PVR.GetChannels", {
+                "channelgroupid": group_id,
+                "properties": ["channel", "channelnumber"]}) or {}).get("channels", [])
+            if not channels:
+                continue
+            status["channels"] = max(status["channels"], len(channels))
+            for channel in channels[:10]:
+                broadcasts = (_rpc("PVR.GetBroadcasts", {
+                    "channelid": channel.get("channelid"),
+                    "properties": ["title", "starttime", "endtime"],
+                    "limits": {"start": 0, "end": 1}}) or {}).get("broadcasts", [])
+                if broadcasts:
+                    status["epg"] = True
+                    break
+            if status["epg"]:
+                break
+    except Exception as exc:
+        client.log("PVR is not ready yet: {}".format(exc), xbmc.LOGDEBUG)
+    status["playable"] = bool(status["channels"] and status["epg"])
+    return status
+
+
 def home():
     r = _router()
     details = _details()
@@ -122,17 +211,7 @@ def configure():
             "IPTV Simple already contains different playlist or guide URLs. Replace its default configuration with ErsatzTV?"):
         return
 
-    values = {
-        "m3uPathType": "1",
-        "m3uUrl": m3u_url,
-        "m3uCache": "true",
-        "epgPathType": "1",
-        "epgUrl": xmltv_url,
-        "epgCache": "true",
-        "epgIgnoreCaseForChannelIds": "true",
-        "defaultProviderName": "ErsatzTV",
-        "numberByOrder": "false",
-    }
+    values = _configuration_values()
     for key, value in values.items():
         if not addon.setSetting(key, value):
             raise RuntimeError("Kodi rejected IPTV Simple setting '{}'".format(key))

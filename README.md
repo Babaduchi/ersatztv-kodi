@@ -4,7 +4,7 @@ An unofficial Kodi add-on for watching and managing an [ErsatzTV](https://ersatz
 
 The add-on reads ErsatzTV's standard M3U playlist and XMLTV guide, plays channels without requiring a PVR client, and can configure Kodi's official IPTV Simple Client for full Live TV integration. Optional channel-building and scheduling controls are available when ErsatzTV is running the authenticated Kodi management companion included in this project.
 
-- Current add-on version: **2.3.7**
+- Current add-on version: **2.4.0**
 - Provider: **Babaduchi**
 - Compatibility: **Kodi 19 or newer (Python 3)** on macOS, Windows, and Linux
 - Management companion target: **ErsatzTV legacy v26.5.1**
@@ -47,6 +47,19 @@ The **PVR Configuration** menu can:
 
 The setup displays the exact URLs before changing anything and asks before replacing a different existing IPTV Simple configuration. Restart Kodi once if channels do not appear immediately after the first setup.
 
+### Guided startup
+
+Kodi starts a lightweight ErsatzTV readiness service automatically. With **Start server automatically** enabled, it:
+
+1. Starts the configured local ErsatzTV executable.
+2. Waits until the server responds.
+3. Installs or safely configures IPTV Simple Client.
+4. Waits for Kodi PVR to register channels.
+5. Waits for programme-guide broadcasts to appear.
+6. Reports **Live TV is now ready.**
+
+Each milestone produces a Kodi notification. Notifications can be disabled in **Settings → Server Configuration**. An existing unrelated IPTV Simple configuration is never replaced silently; Kodi directs the user to **PVR Configuration** for confirmation.
+
 ### Server Configuration
 
 The add-on does **not** bundle ErsatzTV. Point **Server Configuration** at a separately installed ErsatzTV executable to:
@@ -55,7 +68,7 @@ The add-on does **not** bundle ErsatzTV. Point **Server Configuration** at a sep
 - Start, stop, or restart a process launched by Kodi.
 - Monitor process and network status.
 - View the Kodi-started server log.
-- Start ErsatzTV automatically when the add-on opens.
+- Start ErsatzTV automatically when Kodi starts.
 - Generate a cryptographically random Kodi management API key.
 
 When Kodi starts ErsatzTV, it supplies the generated key through `ETV_KODI_MANAGEMENT_KEY`. Kodi can only stop or restart a process that it started itself.
@@ -98,7 +111,7 @@ Manual installation does not provide automatic updates unless the Babaduchi Kodi
 
 ## Initial configuration
 
-1. Start ErsatzTV separately or configure **Server Configuration** to launch its executable.
+1. Open **Server Configuration** and select the ErsatzTV executable. Kodi will launch it automatically on future starts.
 2. Open **ErsatzTV → Settings → Connection**.
 3. Set **Server URL**. For another computer, use its LAN address, such as `http://192.168.1.50:8409`; `localhost` only refers to the computer running Kodi.
 4. Keep the default paths `/iptv/channels.m3u` and `/iptv/xmltv.xml`, or replace them with the exact URLs shown by ErsatzTV.
