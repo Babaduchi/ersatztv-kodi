@@ -71,6 +71,16 @@ def clear_cache():
             xbmcvfs.delete(os.path.join(PROFILE, name))
 
 
+def prune_cache(urls):
+    """Remove cached playlists and guides that no longer match configured URLs."""
+    if not xbmcvfs.exists(PROFILE):
+        return
+    keep = {os.path.basename(_cache_path(url)) for url in urls}
+    for name in xbmcvfs.listdir(PROFILE)[1]:
+        if name.startswith("cache-") and name not in keep:
+            xbmcvfs.delete(os.path.join(PROFILE, name))
+
+
 def fetch(url, force=False):
     cache_path = _cache_path(url)
     ttl = int(setting("cache_minutes", "15")) * 60
@@ -200,10 +210,13 @@ def parse_xmltv(data, minimum=None, maximum=None):
 def load(force=False):
     from datetime import timedelta
     now = datetime.now().astimezone()
-    channels = parse_m3u(fetch(endpoint(setting("m3u_path", "/iptv/channels.m3u")), force))
+    m3u_url = endpoint(setting("m3u_path", "/iptv/channels.m3u"))
+    xmltv_url = endpoint(setting("xmltv_path", "/iptv/xmltv.xml"))
+    prune_cache((m3u_url, xmltv_url))
+    channels = parse_m3u(fetch(m3u_url, force))
     minimum = now - timedelta(hours=int(setting("past_hours", "2")))
     maximum = now + timedelta(hours=int(setting("future_hours", "12")))
-    programmes = parse_xmltv(fetch(endpoint(setting("xmltv_path", "/iptv/xmltv.xml")), force), minimum, maximum)
+    programmes = parse_xmltv(fetch(xmltv_url, force), minimum, maximum)
     return channels, programmes
 
 

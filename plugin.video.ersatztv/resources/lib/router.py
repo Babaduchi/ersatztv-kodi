@@ -122,8 +122,9 @@ def load_guides(force=False):
 
 
 def home():
-    from . import server
-    server.autostart()
+    if client.setting_bool("server_autostart"):
+        from . import server
+        server.autostart()
     layout = client.setting("home_layout", "sections")
     if layout == "channels":
         return channels()

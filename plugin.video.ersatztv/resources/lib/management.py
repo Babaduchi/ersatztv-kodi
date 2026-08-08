@@ -81,12 +81,6 @@ def home():
 
 
 _SECTIONS = {
-    "sources": ("Media sources", [
-        ("Local", "web", "media/sources/local"),
-        ("Emby", "web", "media/sources/emby"),
-        ("Jellyfin", "web", "media/sources/jellyfin"),
-        ("Plex", "web", "media/sources/plex"),
-    ]),
     "media": ("Media", [
         ("Libraries", "web", "media/libraries"),
         ("Trash", "web", "media/trash"),

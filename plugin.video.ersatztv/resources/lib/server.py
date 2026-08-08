@@ -22,6 +22,8 @@ ADDON = xbmcaddon.Addon()
 PROFILE = xbmcvfs.translatePath(ADDON.getAddonInfo("profile"))
 PID_FILE = os.path.join(PROFILE, "ersatztv-server.json")
 LOG_FILE = os.path.join(PROFILE, "ersatztv-server.log")
+OLD_LOG_FILE = LOG_FILE + ".1"
+MAX_LOG_BYTES = 5 * 1024 * 1024
 
 
 def ensure_management_key(regenerate=False):
@@ -49,6 +51,20 @@ def generate_management_key():
 def _ensure_profile():
     if not xbmcvfs.exists(PROFILE):
         xbmcvfs.mkdirs(PROFILE)
+
+
+def _rotate_log():
+    """Keep one previous server log so local-server output cannot grow forever."""
+    try:
+        if not os.path.exists(LOG_FILE):
+            return
+        if os.path.getsize(LOG_FILE) < MAX_LOG_BYTES:
+            return
+        if os.path.exists(OLD_LOG_FILE):
+            os.remove(OLD_LOG_FILE)
+        os.replace(LOG_FILE, OLD_LOG_FILE)
+    except OSError as exc:
+        client.log("Unable to rotate local server log: {}".format(exc), xbmc.LOGWARNING)
 
 
 def _pid_record():
@@ -116,6 +132,7 @@ def start(interactive=True):
     command = [executable] + arguments
     working_dir = xbmcvfs.translatePath(client.setting("server_working_directory")).strip() or os.path.dirname(executable)
     _ensure_profile()
+    _rotate_log()
     environment = os.environ.copy()
     environment["ETV_KODI_MANAGEMENT_KEY"] = ensure_management_key()
     options = {"cwd": working_dir, "stdin": subprocess.DEVNULL, "env": environment}
@@ -206,13 +223,13 @@ def show_log():
 
 
 def home():
-    from .router import HANDLE, finish, item, url
+    from .router import HANDLE, L, finish, item, url
     current = state()
     xbmcplugin.setPluginCategory(HANDLE, "Server Configuration")
     status = "Running" if current["running"] else "Stopped"
     connection = "reachable" if current["reachable"] else "not reachable"
     item("Status: {} · {}".format(status, connection), url("server_status"))
-    item("Test server connection", url("test"))
+    item(L(32206), url("test"))
     item("Choose ErsatzTV executable", url("server_choose"))
     item("Generate management API key", url("server_generate_key"))
     item("Start server", url("server_start"))

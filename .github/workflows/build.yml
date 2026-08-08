@@ -40,7 +40,7 @@ jobs:
               print("valid:", path)
           PY
       - name: Package Kodi add-on
-        run: zip -qr "$ADDON_ZIP" plugin.video.ersatztv -x '*/__pycache__/*'
+        run: zip -qDr "$ADDON_ZIP" plugin.video.ersatztv -x '*/__pycache__/*' 'plugin.video.ersatztv/README.md'
       - name: Verify Kodi-installable ZIP structure
         run: |
           python - <<'PY'
@@ -54,6 +54,7 @@ jobs:
               roots = {path.parts[0] for path in names if path.parts}
               assert roots == {"plugin.video.ersatztv"}, "unexpected ZIP roots: {}".format(sorted(roots))
               assert PurePosixPath("plugin.video.ersatztv/addon.xml") in names, "addon.xml is not in the Kodi add-on root"
+              assert PurePosixPath("plugin.video.ersatztv/README.md") not in names, "source-only README was packaged"
               assert not any(path.suffix.lower() == ".zip" for path in names), "nested ZIP detected"
           print("Kodi ZIP structure is valid and contains no nested archive")
           PY
