@@ -85,7 +85,7 @@ def _alive(pid):
         return False
 
 
-def reachable(timeout=1.5):
+def reachable(timeout=0.35):
     url = client.setting("server_url", "http://localhost:8409").rstrip("/") + "/"
     try:
         with urllib.request.urlopen(url, timeout=timeout):
@@ -117,6 +117,8 @@ def start(interactive=True):
     current = state()
     if current["running"]:
         if interactive:
+            if not current["reachable"]:
+                return wait_until_ready(current["pid"], True)
             xbmcgui.Dialog().ok("Server Configuration", "The server process started by Kodi is already running.")
         return True
     executable = xbmcvfs.translatePath(client.setting("server_executable")).strip()
@@ -150,24 +152,33 @@ def start(interactive=True):
         if interactive:
             xbmcgui.Dialog().ok("Server Configuration", "Could not start ErsatzTV.\n\n{}".format(exc))
         return False
+    if not interactive:
+        return True
+    return wait_until_ready(process.pid, True)
+
+
+def wait_until_ready(pid, interactive=False, show_result=True):
     timeout = max(1, int(client.setting("server_start_timeout", "30")))
-    progress = xbmcgui.DialogProgress()
+    interval_ms = 250
+    attempts = max(1, timeout * 1000 // interval_ms)
+    progress = xbmcgui.DialogProgress() if interactive else None
     if interactive:
         progress.create("Server Configuration", "Waiting for ErsatzTV to become available…")
     ready = False
-    for elapsed in range(timeout):
-        if reachable():
+    for attempt in range(attempts):
+        if reachable(0.25):
             ready = True
             break
-        if not _alive(process.pid):
+        if not _alive(pid):
             break
         if interactive:
-            progress.update(int((elapsed + 1) * 100 / timeout))
+            progress.update(int((attempt + 1) * 100 / attempts))
             if progress.iscanceled():
                 break
-        xbmc.sleep(1000)
+        xbmc.sleep(interval_ms)
     if interactive:
         progress.close()
+    if interactive and show_result:
         message = "ErsatzTV is running and reachable." if ready else "The process started, but the server URL is not reachable yet. Check the URL and server log."
         xbmcgui.Dialog().ok("Server Configuration", message)
     return ready
@@ -241,5 +252,6 @@ def home():
 
 
 def autostart():
-    if client.setting_bool("server_autostart") and not state()["reachable"]:
+    current = state()
+    if client.setting_bool("server_autostart") and not current["reachable"] and not current["running"]:
         start(False)

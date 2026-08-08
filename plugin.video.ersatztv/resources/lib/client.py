@@ -1,5 +1,6 @@
 import gzip
 import hashlib
+import io
 import json
 import os
 import re
@@ -9,7 +10,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timedelta, timezone
 
 import xbmc
 import xbmcaddon
@@ -92,19 +94,33 @@ def fetch(url, force=False):
     if url.startswith("https://") and not setting_bool("verify_tls", True):
         context = ssl._create_unverified_context()
     try:
-        with urllib.request.urlopen(request, timeout=int(setting("timeout", "15")), context=context) as response:
-            data = response.read()
-            if response.headers.get("Content-Encoding") == "gzip":
-                data = gzip.decompress(data)
-        with open(cache_path, "wb") as handle:
-            handle.write(data)
-        return data
+        deadline = time.time() + min(10, int(setting("server_start_timeout", "30")))
+        while True:
+            try:
+                with urllib.request.urlopen(request, timeout=int(setting("timeout", "15")), context=context) as response:
+                    data = response.read()
+                    if response.headers.get("Content-Encoding") == "gzip":
+                        data = gzip.decompress(data)
+                break
+            except urllib.error.URLError as exc:
+                reason = getattr(exc, "reason", None)
+                code = getattr(reason, "errno", None) or getattr(reason, "winerror", None)
+                local_startup = setting_bool("server_autostart") and code in (61, 111, 10061)
+                if not local_startup or time.time() >= deadline:
+                    raise
+                xbmc.sleep(250)
     except (urllib.error.URLError, OSError) as exc:
         log("Request failed for {}: {}".format(url, exc), xbmc.LOGERROR)
         if setting_bool("fallback_cache", True) and xbmcvfs.exists(cache_path):
             with open(cache_path, "rb") as handle:
                 return handle.read()
         raise
+    try:
+        with open(cache_path, "wb") as handle:
+            handle.write(data)
+    except OSError as exc:
+        log("Unable to cache {}: {}".format(url, exc), xbmc.LOGWARNING)
+    return data
 
 
 def api_request(path, method="GET", payload=None):
@@ -170,12 +186,14 @@ def _xmltv_time(value):
     match = re.match(r"(\d{14})(?:\s*([+-]\d{4}|Z))?", value)
     if not match:
         raise ValueError("Invalid XMLTV date: {}".format(value))
-    base = datetime.strptime(match.group(1), "%Y%m%d%H%M%S")
+    stamp = match.group(1)
+    base = datetime(
+        int(stamp[0:4]), int(stamp[4:6]), int(stamp[6:8]),
+        int(stamp[8:10]), int(stamp[10:12]), int(stamp[12:14]))
     offset = match.group(2)
     if offset and offset != "Z":
         sign = 1 if offset[0] == "+" else -1
         minutes = sign * (int(offset[1:3]) * 60 + int(offset[3:5]))
-        from datetime import timedelta
         return base.replace(tzinfo=timezone(timedelta(minutes=minutes))).astimezone()
     return base.replace(tzinfo=timezone.utc).astimezone()
 
@@ -187,15 +205,25 @@ def _text(node, name):
 
 def parse_xmltv(data, minimum=None, maximum=None):
     programmes = []
-    root = ET.fromstring(data)
-    for node in root.findall("programme"):
+    context = ET.iterparse(io.BytesIO(data), events=("start", "end"))
+    _, root = next(context)
+    for event, node in context:
+        tag = node.tag.rsplit("}", 1)[-1]
+        if event != "end" or tag not in ("channel", "programme"):
+            continue
+        if tag == "channel":
+            root.clear()
+            continue
         try:
             start, stop = _xmltv_time(node.get("start")), _xmltv_time(node.get("stop"))
         except ValueError:
+            root.clear()
             continue
         if minimum and stop < minimum:
+            root.clear()
             continue
         if maximum and start > maximum:
+            root.clear()
             continue
         icon = node.find("icon")
         programmes.append(Programme(
@@ -204,19 +232,23 @@ def parse_xmltv(data, minimum=None, maximum=None):
             description=_text(node, "desc"), category=[(x.text or "").strip() for x in node.findall("category") if x.text],
             icon=icon.get("src", "") if icon is not None else "", episode=_text(node, "episode-num")
         ))
+        root.clear()
     return programmes
 
 
 def load(force=False):
-    from datetime import timedelta
     now = datetime.now().astimezone()
     m3u_url = endpoint(setting("m3u_path", "/iptv/channels.m3u"))
     xmltv_url = endpoint(setting("xmltv_path", "/iptv/xmltv.xml"))
     prune_cache((m3u_url, xmltv_url))
-    channels = parse_m3u(fetch(m3u_url, force))
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        m3u_data = pool.submit(fetch, m3u_url, force)
+        xmltv_data = pool.submit(fetch, xmltv_url, force)
+        playlist, guide = m3u_data.result(), xmltv_data.result()
+    channels = parse_m3u(playlist)
     minimum = now - timedelta(hours=int(setting("past_hours", "2")))
     maximum = now + timedelta(hours=int(setting("future_hours", "12")))
-    programmes = parse_xmltv(fetch(xmltv_url, force), minimum, maximum)
+    programmes = parse_xmltv(guide, minimum, maximum)
     return channels, programmes
 
 

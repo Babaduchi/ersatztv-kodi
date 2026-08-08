@@ -4,7 +4,7 @@ An unofficial Kodi add-on for watching and managing an [ErsatzTV](https://ersatz
 
 The add-on reads ErsatzTV's standard M3U playlist and XMLTV guide, plays channels without requiring a PVR client, and can configure Kodi's official IPTV Simple Client for full Live TV integration. Optional channel-building and scheduling controls are available when ErsatzTV is running the authenticated Kodi management companion included in this project.
 
-- Current add-on version: **2.3.6**
+- Current add-on version: **2.3.7**
 - Provider: **Babaduchi**
 - Compatibility: **Kodi 19 or newer (Python 3)** on macOS, Windows, and Linux
 - Management companion target: **ErsatzTV legacy v26.5.1**

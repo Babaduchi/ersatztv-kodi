@@ -249,6 +249,16 @@ def format_time(value):
 
 def play(stream, name, logo):
     stream = client.endpoint(stream)
+    if client.setting_bool("server_autostart"):
+        server_url = client.setting("server_url", "http://localhost:8409")
+        if urllib.parse.urlsplit(stream).netloc == urllib.parse.urlsplit(server_url).netloc:
+            from . import server
+            current = server.state()
+            if current["running"] and not current["reachable"]:
+                if not server.wait_until_ready(current["pid"], True, False):
+                    xbmcgui.Dialog().ok("ErsatzTV", "The local server is still unavailable. Check Server Configuration and the server log.")
+                    xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
+                    return
     li = xbmcgui.ListItem(label=name, path=stream)
     li.setArt({"thumb": logo, "icon": logo})
     mime = client.setting("mime_type", "auto")
